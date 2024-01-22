@@ -24,7 +24,7 @@ def get_response(text, jd, api_key):
     model = GoogleGenerativeAI(
         model="models/gemini-pro",
         google_api_key=api_key,
-        temperature=0.1,
+        temperature=1.0,
     )
 
     # Construct prompt carefully as the response of the llm heavily depends on it
@@ -41,7 +41,8 @@ def get_response(text, jd, api_key):
             - Understand the given job description properly
             - Evaluate the given resume based on the given job description
             - Assign the percentage matching of the resume based on the job description
-            - Suggest upto 10 to 20 important keywords that might be missing from the resume so as to match it better
+            - Do not give percentage in decimal form and do not include '%' sign, only give numerical value
+            - Suggest upto 20 important keywords that might be missing from the resume
             - Give proper and thorough reason as of why and why not the candidate is fit for the position/job
             - Give proper and thorough points to improve candidates profile and resume
             
@@ -72,6 +73,20 @@ def main():
         st.markdown(
             """
                     ### [Get your own api key](https://ai.google.dev/tutorials/setup)
+                    .\n        
+                    """
+        )
+
+        st.warning(
+            "Warning: This is an LLM based application, more specifically Google's Gemini-Pro. The output of this app solely depends on the response it had received by the llm. Sometimes it hallucinates and sometimes gives result in wrong format. If you get any kind of error, try clicking Submit button multiple times. :   ) "
+        )
+
+        st.markdown(
+            """
+                    .\n
+                    .\n
+                    Made with :heart: by [Rahul Netkar](www.github.com/rahulNetkar) . 
+                    [Twitter](https://twitter.com/RahulNetkar) . [LinkedIn](https://www.linkedin.com/in/rahul-netkar-aa065a1b1/)
                     """
         )
 
@@ -101,8 +116,8 @@ def main():
                 )
 
                 with tab1:
-                    st.progress(int(json_resp["Match"][:-1]))
-                    st.subheader(f'{json_resp["Match"]}')
+                    st.progress(int(json_resp["Match"]))
+                    st.subheader(f'{json_resp["Match"]}%')
 
                 with tab2:
                     for i in json_resp["MissingKeywords"]:
